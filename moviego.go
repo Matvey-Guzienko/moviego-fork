@@ -53,7 +53,7 @@ func (OutputProcess Output) Run() error {
 	return OutputProcess.video.render()
 }
 
-func (V *Video) addKwArgs(key, value string) Video {
+func (V *Video) AddKwArgs(key, value string) {
 	if V.ffmpegArgs == nil {
 		V.ffmpegArgs = make(map[string][]string)
 		V.addDefaultKwArgs()
@@ -66,11 +66,11 @@ func (V *Video) addDefaultKwArgs() {
 	//keys := Keys(V.ffmpegArgs)
 	//
 	//if InArray("c:v", keys) == false {
-	//    V.addKwArgs("c:v", "copy")
+	//    V.AddKwArgs("c:v", "copy")
 	//}
 	//
 	//if InArray("c:a", keys) == false {
-	//    V.addKwArgs("c:a", "copy")
+	//    V.AddKwArgs("c:a", "copy")
 	//}
 }
 
@@ -111,10 +111,10 @@ func (V Video) Resize(width, height int64) Video {
 func (V Video) prepareKwArgs(ignoreThisKeywords []string) ffmpeg.KwArgs {
 	// Fix: ffmpeg width or height not divisible by 2 error
 	if V.width%2 != 0 || V.height%2 != 0 {
-		V.addKwArgs("vf", fmt.Sprintf("format=yuv444p,scale=%d:%d", V.width, V.height))
+		V.AddKwArgs("vf", fmt.Sprintf("format=yuv444p,scale=%d:%d", V.width, V.height))
 		V.hasModified = true
 	} else {
-		V.addKwArgs("vf", fmt.Sprintf("scale=%d:%d", V.width, V.height))
+		V.AddKwArgs("vf", fmt.Sprintf("scale=%d:%d", V.width, V.height))
 	}
 
 	compileKwArgs := make(ffmpeg.KwArgs)
@@ -187,8 +187,8 @@ func (V Video) tempRender() Video {
 func (V Video) SubClip(start, end float64) Video {
 	V.checkStartAndEnd(start, end)
 
-	V.addKwArgs("ss", fmt.Sprintf("%f", start))
-	V.addKwArgs("to", fmt.Sprintf("%f", end))
+	V.AddKwArgs("ss", fmt.Sprintf("%f", start))
+	V.AddKwArgs("to", fmt.Sprintf("%f", end))
 	V.duration = end - start
 	V.hasModified = true
 
@@ -255,27 +255,27 @@ func Concat(videos []Video) (Video, error) {
 }
 
 func (V Video) FadeIn(start, duration float64) Video {
-	V.addKwArgs("vf", fmt.Sprintf("fade=t=in:st=%.3f:d=%.3f", start, duration))
+	V.AddKwArgs("vf", fmt.Sprintf("fade=t=in:st=%.3f:d=%.3f", start, duration))
 	V.hasModified = true
 	return V
 }
 
 func (V Video) FadeOut(duration float64) Video {
 	end := V.duration - duration
-	V.addKwArgs("vf", fmt.Sprintf("fade=t=out:st=%.3f:d=%.3f", end, duration))
+	V.AddKwArgs("vf", fmt.Sprintf("fade=t=out:st=%.3f:d=%.3f", end, duration))
 	V.hasModified = true
 	return V
 }
 
 func (V Video) AudioFadeIn(start, duration float64) Video {
-	V.addKwArgs("af", fmt.Sprintf("afade=t=in:st=%.3f:d=%.3f", start, duration))
+	V.AddKwArgs("af", fmt.Sprintf("afade=t=in:st=%.3f:d=%.3f", start, duration))
 	V.hasModified = true
 	return V
 }
 
 func (V Video) AudioFadeOut(duration float64) Video {
 	end := V.duration - duration
-	V.addKwArgs("af", fmt.Sprintf("afade=t=out:st=%.3f:d=%.3f", end, duration))
+	V.AddKwArgs("af", fmt.Sprintf("afade=t=out:st=%.3f:d=%.3f", end, duration))
 	V.hasModified = true
 	return V
 }
