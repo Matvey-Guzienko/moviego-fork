@@ -5,7 +5,7 @@
 ### ⬇️ Instalation
 
 ```bash
-go get github.com/mowshon/moviego
+go get github.com/Matvey-Guzienko/moviego-fork
 ```
 
 ### 🎥 Resize video in Golang
