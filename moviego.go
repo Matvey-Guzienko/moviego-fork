@@ -53,7 +53,7 @@ func (OutputProcess Output) Run() error {
 	return OutputProcess.video.render()
 }
 
-func (V *Video) addKwArgs(key, value string) {
+func (V *Video) addKwArgs(key, value string) Video {
 	if V.ffmpegArgs == nil {
 		V.ffmpegArgs = make(map[string][]string)
 		V.addDefaultKwArgs()
